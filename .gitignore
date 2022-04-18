@@ -77,3 +77,6 @@ typings/
 
 /lib
 /test
+/nw/
+/run/lib/
+/.idea/

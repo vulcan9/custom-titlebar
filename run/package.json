@@ -1,0 +1,30 @@
+{
+    "version": "1.0.0",
+    "name": "jikji.editor.demo_menubar2",
+
+    "main": "./index.html",
+
+    "node-remote": [
+        "<all_urls>"
+    ],
+    "nodejs": true,
+    "js-flags": "--harmony --expose-gc",
+    "window": {
+        "title": "Menubar",
+    "frame": false,
+    "toolbar": false,
+        "width": 1200,
+        "height": 700,
+        "min_width": 850,
+        "min_height": 450,
+        "resizable": true,
+        "position": "center",
+        "show": true,
+        "transparent": false,
+        "fullscreen": false
+    },
+    "webkit": {
+        "plugin": true
+    },
+    "license": "MIT"
+}

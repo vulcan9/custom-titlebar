@@ -22,12 +22,16 @@ let menuCondensed = false;
 let titlebarHeight = 30;
 
 export default class Titlebar {
-  constructor(titleBarOptions?: TitleBarOptions) {
+  constructor(titleBarOptions?: TitleBarOptions, dom?: HTMLDivElement) {
     // Inject style
     (style as any).use();
 
+    if(dom){
+      titlebar = dom;
+    }else{
+      titlebar = document.createElement('div');
+    }
     // Create titlebar
-    titlebar = document.createElement('div');
     titlebar.id = style.locals.titlebar;
     titlebar.classList.add('custom-titlebar');
     titlebar.oncontextmenu = () => false;
@@ -83,23 +87,29 @@ export default class Titlebar {
     controls.append(closeWindow);
     titlebar.append(controls);
 
+    //------------------------------------------------------------------
     // Create container
-    container = document.createElement('div');
-    container.id = style.locals.container;
-    container.classList.add('custom-titlebar-container');
 
-    // Move body inside a container
-    while (document.body.firstChild) {
-      container.append(document.body.firstChild);
+    if(!dom){
+      container = document.createElement('div');
+      container.id = style.locals.container;
+      container.classList.add('custom-titlebar-container');
+
+      // Move body inside a container
+      while (document.body.firstChild) {
+        container.append(document.body.firstChild);
+      }
+
+      // Insert container
+      document.body.append(container);
+      document.body.style.overflow = 'hidden';
+      document.body.style.margin = '0';
+
+      // Insert titlebar
+      document.body.insertBefore(titlebar, container);
     }
 
-    // Insert container
-    document.body.append(container);
-    document.body.style.overflow = 'hidden';
-    document.body.style.margin = '0';
-
-    // Insert titlebar
-    document.body.insertBefore(titlebar, container);
+    //------------------------------------------------------------------
 
     // Apply options
     if (titleBarOptions) {
@@ -127,27 +137,44 @@ export default class Titlebar {
     titlecontainer.innerText = newTitle || window.document.title;
   }
 
+  /*
   updateMenu(template?: Record<string, any> | null): void {
     // Deprecated warning
     // eslint-disable-next-line no-console
     console.warn('Warning: updateMenu is deprecated and will be removed in v1.0.0, use updateOptions instead.');
     updateMenu(template);
   }
+  */
 
   getMenuItemById(id: number): Record<string, any> | null {
     return getMenuItemById(id);
   }
 
+  // 수동으로 메뉴 열기
+  open(index= 0){
+    menu?.open(index);
+  }
+  close(){
+    menu?.closeSubMenu();
+  }
+
   dispose(): void {
-    while (container.firstChild) {
-      document.body.append(container.firstChild);
+
+    titlebar.removeEventListener('openMenu', onOpenMenu);
+    titlebar.removeEventListener('closeMenu', onCloseMenu);
+    titlebar.remove();
+
+    if(container){
+      while (container.firstChild) {
+        document.body.append(container.firstChild);
+      }
+      container.remove();
     }
+
     window.removeEventListener('blur', onBlur);
     window.removeEventListener('focus', onFocus);
     window.removeEventListener('resize', onResize);
     window.removeEventListener('click', onClick);
-    titlebar.remove();
-    container.remove();
   }
 }
 
@@ -167,6 +194,11 @@ const onBlur = () => {
   if (Options.values.unfocusEffect) {
     titlebar.classList.add(style.locals.inactive);
   }
+
+  // 개발용으로 닫지 않음
+  if(Options.values._dev) return;
+
+  if (!Options.values.useBlurClose) return;
   menu?.closeSubMenu();
 };
 
@@ -261,7 +293,7 @@ const applyOptions = (o: TitleBarOptions, context: Titlebar) => {
     updateMenuSize();
   }
   if (o.overflow) {
-    container.style.overflow = o.overflow;
+    if(container) container.style.overflow = o.overflow;
   }
   if (typeof o.drag != 'undefined') {
     titlebar.classList.toggle(style.locals.nodrag, !o.drag);
@@ -288,6 +320,8 @@ const applyOptions = (o: TitleBarOptions, context: Titlebar) => {
   if (typeof o.hideControlsOnDarwin != 'undefined') {
     controls.style.visibility = o.hideControlsOnDarwin && Options.getPlatform() == 'darwin' ? 'hidden' : 'visible';
   }
+
+  applyBackdrop();
 };
 
 const applyTheme = () => {
@@ -308,7 +342,7 @@ const applyTheme = () => {
 
 const updateHeight = (height: number) => {
   titlebar.style.height = height + 'px';
-  container.style.height = `calc(100vh - ${height}px)`;
+  if(container) container.style.height = `calc(100vh - ${height}px)`;
 };
 
 // Check if the menu need to be condensed
@@ -430,3 +464,24 @@ const parseColor = (input: string): Array<number> => {
 const getBrightness = (rgb: Array<number>): number => {
   return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
 };
+
+//-------------------------------------
+// backdrop
+//-------------------------------------
+
+const applyBackdrop = ()=>{
+  titlebar.removeEventListener('openMenu', onOpenMenu);
+  titlebar.removeEventListener('closeMenu', onCloseMenu);
+
+  if(Options.values.backdrop){
+    titlebar.addEventListener('openMenu', onOpenMenu);
+    titlebar.addEventListener('closeMenu', onCloseMenu);
+  }
+}
+
+const onOpenMenu = (e: Event): void =>{
+  titlebar.classList.add('backdrop');
+}
+const onCloseMenu = (e: Event): void =>{
+  titlebar.classList.remove('backdrop');
+}

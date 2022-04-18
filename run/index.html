@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Hello World!</title>
+    <script src="./lib/index.js"></script>
+    <style>
+        /*
+        .custom-titlebar{
+            height: 60px;
+        }
+        .custom-titlebar-appicon{
+            height: 30px;
+            !*position: absolute;*!
+            top: 0;
+        }
+        */
+
+        body{
+            background-color: rgba(0, 0, 0, 0.34);
+        }
+        .custom-titlebar{
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .backdrop:before{
+            content: '';
+            background-color: #33c74824;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        /* Dark skin*/
+
+        /* Style of the titlebar.*/
+        .custom-titlebar{
+            background-color: #8cd0f8;
+            color: rgb(0, 0, 0);
+        }
+        /* Style of the icon.
+        .custom-titlebar-appicon{}
+        */
+        /* Style of the container under the titlebar.
+        .custom-titlebar-container{}
+        */
+        /* Style of the window controls.
+        .custom-titlebar-controls{}
+        */
+        /* Style of the main menu items.*/
+        .custom-titlebar-menu-item{
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        .custom-titlebar-menu-active,
+        .custom-titlebar-menu-item:hover,
+        .custom-titlebar-menu-item:active{
+            background-color: #00a6ff;
+        }
+        /* Style of the separators.*/
+        .custom-titlebar-separator{
+
+        }
+        /* Style of the submenus.*/
+        .custom-titlebar-submenu{
+            background-color: #3e3e3e;
+            color: white;
+        }
+        /* Style of the submenu items.*/
+        .custom-titlebar-submenu-item{}
+        .custom-titlebar-submenu-item:hover,
+        .custom-titlebar-submenu-item:active{
+            background-color: rgba(0, 166, 255, 0.3);
+        }
+
+        .custom-titlebar-submenu-item svg {
+            /*margin: 10px 10px !important;*/
+        }
+        .custom-titlebar-submenu-item svg > * {
+            fill: white;
+        }
+        .custom-titlebar-submenu-item:hover > svg > *,
+        .custom-titlebar-submenu-item:active > svg > *{
+            fill: red;
+        }
+        /* 그룹 제목만 표시*/
+        .custom-titlebar-group{
+            /*padding: 0px 10px;*/
+        }
+        .custom-titlebar-separator-line{
+            background-color: #000;
+        }
+        .custom-titlebar-group-label{
+        }
+        /*disabled 된 아이템 클릭했을때 닫기하려면 none 설정*/
+        .custom-titlebar-disabled-item{
+            /*pointer-events: none;*/
+        }
+    </style>
+</head>
+<body>
+<div id='custom-titlebar'></div>
+<h1>Hello World!</h1>
+<button onclick="alert('click');">마우스 테스트</button>
+<script>
+    // 버튼 아이콘 구별하기 위해 사용됨
+    const {platform} = require('process');
+    console.error('platform : ', platform);
+
+    const win = nw.Window.get();
+    let maximized = false;
+
+    win.onMaximized.addListener(() => {
+        maximized = true;
+    });
+    win.onRestore.addListener(() => {
+        maximized = false;
+    });
+
+    const dom = document.querySelector('#custom-titlebar');
+    const titlebar = new Titlebar({
+        // backgroundColor: '#37474f',
+        platform: platform,
+        onMinimize: () => win.minimize(),
+        onMaximize: () => maximized ? win.restore() : win.maximize(),
+        onClose: () => win.close(),
+        isMaximized: () => maximized,
+
+        backdrop: true,
+        useBlurClose: false,
+        closeDisabledItemOnClick: false,
+        menu: [{label: 'Item 1', id: 'item1'}]
+    }, dom);
+
+    /*
+    const menuItem = titlebar.getMenuItemById('item1');
+    console.log(menuItem.label); // Item 1
+    */
+
+    // With a menu template
+    const menu = [
+        {
+            label: 'Item 1',
+            submenu: [
+                {
+                    label: 'sub Item 1',
+                    click: () => console.log('Clicked on subitem 1')
+                },
+                {
+                    type: 'separator',
+                    label: 'Group title',
+                },
+                {
+                    enabled: false,
+                    label: 'sub Item 2',
+                    click: () => console.log('Clicked on subitem 2')
+                },
+            ]
+        },
+        {
+            // enabled: false,
+            label: 'Item 2',
+            submenu: [
+                {
+                    // icon: 'favicon.png',
+                    label: 'sub Item checkbox',
+                    type: 'checkbox',
+                    checked: true
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    // icon: 'favicon.png',
+                    label: 'sub Item with sub Item',
+                    submenu: [
+                        {
+                            // icon: 'favicon.png',
+                            label: 'Sub Item 1',
+                            accelerator: 'Ctrl+T',
+                            // enabled: false,
+                            // click: function(){alert('ctrl+t')},
+                            type: 'checkbox',
+                            checked: true
+                        },
+                        {
+                            // icon: 'favicon.png',
+                            label: 'Sub Item 2',
+                            accelerator: 'Ctrl+T',
+                            // enabled: false,
+                            // click: function(){alert('ctrl+t')},
+                            type: 'checkbox',
+                            checked: true
+                        }
+                    ]
+                },
+                {
+                    // icon: 'favicon.png',
+                    label: 'sub Item with sub Item',
+                    submenu: [
+                        {
+                            // icon: 'favicon.png',
+                            label: 'Sub Item 1',
+                            accelerator: 'Ctrl+T',
+                            // enabled: false,
+                            // click: function(){alert('ctrl+t')},
+                            type: 'checkbox',
+                            checked: true
+                        },
+                        {
+                            // icon: 'favicon.png',
+                            label: 'Sub Item 2',
+                            accelerator: 'Ctrl+T',
+                            // enabled: false,
+                            // click: function(){alert('ctrl+t')},
+                            type: 'checkbox',
+                            checked: true
+                        }
+                    ]
+                }
+            ]
+        }
+    ];
+    titlebar.updateOptions({
+        // menu: Menu.getApplicationMenu(),
+        // condensed: 'true', // 햄버거 메뉴
+        // titleHorizontalAlignment: 'left',
+        // windowControlsOverlay: true
+        // backgroundUnfocusEffect: false,
+        // icon: 'favicon.ico',
+        // titleHorizontalAlignment: 'left',
+        menu: menu,
+
+        // Or with getApplicationMenu in Electron
+        // menu: window.nw.Menu.getApplicationMenu(),
+
+        height: 25,
+        onOpenMenuHook: onOpenMenuHook
+    });
+
+    /*
+    var titlebarDOM = document.querySelector('.custom-titlebar');
+    titlebarDOM.addEventListener('openMenu', onOpenMenu);
+    titlebarDOM.addEventListener('closeMenu', onCloseMenu);
+    function onOpenMenu (e){
+        window.console.error('titlebarDOM onOpenMenu : ', e.detail);
+    }
+    function onCloseMenu(e){
+        window.console.error('titlebarDOM onCloseMenu : ', e.detail);
+    }
+    */
+    const menu1 = [
+        {
+            // enabled: false,
+            label: 'Menu 1',
+            submenu: [
+                {
+                    label: 'sub Menu 1',
+                    click: () => console.log('Clicked on sub Menu 1')
+                },
+                {
+                    type: 'separator',
+                    label: 'Group title',
+                },
+                {
+                    label: 'sub Menu 2',
+                    click: () => console.log('Clicked on sub Menu 2')
+                },
+            ]
+        },
+        {
+            // enabled: false,
+            label: 'Menu 2',
+            submenu: [
+                {
+                    // icon: 'favicon.png',
+                    label: 'sub Menu checkbox',
+                    type: 'checkbox',
+                    checked: true
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    // icon: 'favicon.png',
+                    label: 'sub Menu with sub Menu',
+                    iconSelector: '[icon-import="a"]',
+                    submenu: [
+                        {
+                            // icon: 'favicon.png',
+                            label: 'sub Menu 1',
+                            accelerator: 'Ctrl+T',
+                            // enabled: false,
+                            click: function(){alert('ctrl+t')}
+                        }
+                    ]
+                }
+            ]
+        }
+    ];
+    let lastmenu = menu;
+    function onOpenMenuHook(index){
+        window.console.error('onOpenMenu : ', index);
+        lastmenu = (lastmenu === menu) ? menu1 : menu;
+
+        titlebar.updateOptions({
+            menu: lastmenu
+        });
+
+        // 수동으로 index 열기
+        // titlebar.open(index);
+    }
+
+    // DOM 까지 모두 제거
+    // titlebar.dispose();
+</script>
+</body>
+</html>

@@ -446,17 +446,185 @@ titlebar.dispose();
 
 The following CSS classes exist and can be used to customize the titlebar.
 
-| Class name                     | Description                                    |
-| ------------------------------ | ---------------------------------------------- |
-| `custom-titlebar`              | Style of the titlebar.                         |
-| `custom-titlebar-appicon`      | Style of the icon.                             |
-| `custom-titlebar-container`    | Style of the container under the titlebar.     |
-| `custom-titlebar-controls`     | Style of the window controls.                  |
-| `custom-titlebar-menu-item`    | Style of the main menu items.                  |
-| `custom-titlebar-separator`    | Style of the separators.                       |
-| `custom-titlebar-submenu`      | Style of the submenus.                         |
-| `custom-titlebar-submenu-item` | Style of the submenu items.                    |
+| Class name                        | Description                                |
+|-----------------------------------|--------------------------------------------|
+| `custom-titlebar`                 | Style of the titlebar.                     |
+| `custom-titlebar-appicon`         | Style of the icon.                         |
+| `custom-titlebar-container`       | Style of the container under the titlebar. |
+| `custom-titlebar-controls`        | Style of the window controls.              |
+| `custom-titlebar-menu-item`       | Style of the main menu items.              |
+| `custom-titlebar-separator`       | Style of the separators.                   |
+| `custom-titlebar-separator-line`  | separators 라인 스타일.                    |
+| `custom-titlebar-submenu`         | Style of the submenus.                     |
+| `custom-titlebar-submenu-item`    | Style of the submenu items.                |
+
+### 추가된 CSS Class
+
+| Class name                    | Description                                    |
+|-------------------------------|------------------------------------------------|
+| `backdrop`                    | backdrop 스타일                                |
+| `custom-titlebar-menu-active` | 현재 활성화 상태의 메뉴 아이템.                |
+| `custom-titlebar-group`       | label이 설정된 그룹(separator 라인) 아이템.    |
+| `custom-titlebar-group-label` | 그룹 아이템의 label 스타일.                    |
 
 ----
 
 Made with love and fun from France ❤
+
+
+
+# 추가된 기능
+
+### 메뉴 생성 위치 (DOM) 을 지정
+DOM을 지정하여 사용하면 `container`를 생성하지 않고 HTML 구조를 그대로 유지 할 수 있음(DOM 이동 없음)
+
+```
+// HTML: <div id='custom-titlebar'></div>
+
+const dom = document.querySelector('#custom-titlebar');
+const titlebar = new Titlebar({}, dom);
+
+// dom 내부에 메뉴가 생성됨
+```
+
+### separator 라벨 지정 가능
+separator 라인과 함깨 label을 표시할 수 있음 (메뉴 그룹 표시)
+```
+    ...
+    submenu: [
+        ...
+        {
+            type: 'separator',
+            label: 'Group title',
+        },
+        ...
+    ]
+```
+
+### open, close 이벤트
+이벤트는 최상위 메뉴가 열리고 닫힐때 한번씩만 발생함.  
+서브메뉴가 열리고 닫히는 것과 무관함.
+```
+var titlebarDOM = document.querySelector('.custom-titlebar');
+titlebarDOM.addEventListener('openMenu', onOpenMenu);
+titlebarDOM.addEventListener('closeMenu', onCloseMenu);
+
+function onOpenMenu (e){
+    window.console.error('onOpenMenu : ', e.detail);
+}
+function onCloseMenu(e){
+    window.console.error('onCloseMenu : ', e.detail);
+}
+```
+
+### backdrop 옵션 (Options)
+메뉴가 열렸을때 메뉴 뒤쪽에 위치한 DOM에 마우스 기능을 막도록 backdrop을 생성함
+```
+const titlebar = new Titlebar({backdrop: true});
+
+// CSS
+.backdrop:before{
+    content: '';
+    background-color: #33c74824;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+```
+
+### open/close 메서드 추가
+프로그램으로 메뉴를 열고 닫을수 있도록 메서드 추가함.
+서브 메뉴는 지원하지 않음
+```
+// 수동으로 열기/닫기 (default index:0)
+titlebar.open(index?:=0);
+titlebar.close();
+```
+
+### 메뉴 open 될떼 내용 변경 가능하도록 hook 메서드 지정 (Options)
+```
+titlebar.updateOptions({
+    onOpenMenuHook: onOpenMenuHook
+});
+
+// 수동으로 index 열기/닫기
+// titlebar.open(index);
+// titlebar.close();
+
+function onOpenMenuHook(index){
+    // 메뉴 내용 교체
+    titlebar.updateOptions({
+        menu: 새로운 메뉴 템플릿
+    });
+
+    // true를 return 하면 메뉴가 열리는것을 중지하므로 이후 수동으로 열어야 함
+    // return true;
+}
+```
+
+### 아이콘 CSS Selector 지정 가능
+`icon` 옵션이 지정된 경우 `img` 태그에 css가 설정되고, 지정되지 않은 경우 `div` 태그에 지정됨
+- `#이름` : id로 지정
+- `.이름`, `이름` : class로 지정
+- `[이름]`, `[이름=""]`, `[이름='']` : attribute으로 지정
+
+```
+titlebar.updateOptions({
+    iconSelector: 'CSS Selector 지정',
+    className: 'CSS Selector 지정'
+});
+
+// CSS에서 아이콘 모양 지정
+```
+
+### useBlurClose 옵션
+윈도우창이 포커싱을 잃었을때 메뉴 창을 닫을지(true) 여부 (default=true)
+### closeDisabledItemOnClick 옵션
+비활성화 메뉴 또는 separator 항목을 클릭한 경우 메뉴 창을 닫을지(true) 여부 (default=true)
+### _dev 옵션
+개발용으로 사용. true로 지정하면 blur, mouseleave 이벤트에 대해서 창을 닫지 않음 (default=false)
+
+## 실행 명령
+```
+webpack watch --mode development
+npm run watch
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

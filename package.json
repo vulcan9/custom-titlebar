@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "watch": "webpack watch --mode development",
     "build": "webpack --mode production",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.scss\"",
     "lint": "eslint . --ext .ts --fix",

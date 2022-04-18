@@ -1,0 +1,9 @@
+지정한 dom에 메뉴 생성 옵션
+open, close 이벤트 발생
+backdrop 옵션
+separator 라벨 지정 가능
+메뉴 open 될떼 내용 변경 가능하도록 hook 메서드 지정
+아이콘 Class 이름 지정 가능
+
+webpack watch --mode development
+npm run watch

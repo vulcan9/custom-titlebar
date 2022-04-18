@@ -1,7 +1,7 @@
 import style from '../style/style.scss';
 import MenuItem from './MenuItem';
 
-let mainMenu: Menu;
+// let mainMenu: Menu;
 
 export default class Menu {
   menuItems: Array<MenuItem> = [];
@@ -9,6 +9,11 @@ export default class Menu {
   subMenu: Menu | null = null;
   isSubMenu = false;
   activeMenu = -1;
+
+  checkTimeoutID = -1;
+  menuIsOpened = false;
+
+  static mainMenu: Menu;
 
   constructor(items: Array<any>, submenu = false) {
     this.isSubMenu = submenu;
@@ -21,8 +26,9 @@ export default class Menu {
       this.element.append(this.menuItems[i].element);
     }
     if (!submenu) {
-      mainMenu = this;
+      Menu.mainMenu = this;
     }
+    // window.console.error('style : ', style.locals);
   }
 
   // Return true if a submenu is opened
@@ -30,13 +36,22 @@ export default class Menu {
     return this.subMenu != null;
   }
 
+  // 수동으로 메뉴 열기
+  open(index: number){
+    const menuItem: Record<string, any> = this.menuItems[index];
+    this.openSubMenu(menuItem.item.submenu, index);
+  }
+
   openSubMenu(submenu: Record<string, any>, index: number): void {
+    const isOpened = (this.activeMenu !== -1);
     if (this.activeMenu == index) return;
     this.closeSubMenu();
     this.activeMenu = index;
+
     const menuItem = this.menuItems[index];
     this.subMenu = new Menu(submenu.items, true);
     menuItem.element.classList.add(style.locals.active);
+    menuItem.element.classList.add('custom-titlebar-menu-active');
     menuItem.element.appendChild(this.subMenu.element);
 
     // Prevent submenu to get out of window
@@ -50,20 +65,46 @@ export default class Menu {
     if (freeSpace.y < 0) {
       this.subMenu.element.style.marginTop = `${freeSpace.y}px`;
     }
+
+    if(!isOpened) this.checkOpenCloseEvent(menuItem);
   }
 
   closeSubMenu(main = false): void {
     if (main) {
-      mainMenu.closeSubMenu();
+      Menu.mainMenu.closeSubMenu();
     } else if (this.activeMenu >= 0) {
       const menuItem = this.menuItems[this.activeMenu];
       if (menuItem) {
         menuItem.element.classList.remove(style.locals.active);
+        menuItem.element.classList.remove('custom-titlebar-menu-active');
         menuItem.element.querySelector(`.${style.locals.submenu}`)?.remove();
         this.subMenu = null;
         this.activeMenu = -1;
+
+        this.checkOpenCloseEvent(menuItem);
       }
     }
+  }
+
+  checkOpenCloseEvent(menuItem: MenuItem): void{
+    if(menuItem.parent.isSubMenu) return;
+
+    if(this.checkTimeoutID !== -1) clearTimeout(this.checkTimeoutID);
+    this.checkTimeoutID = -1;
+
+    this.checkTimeoutID = window.setTimeout((): void=>{
+      this.checkTimeoutID = -1;
+      const menuIsOpened = (this.activeMenu !== -1);
+      if(this.menuIsOpened === menuIsOpened) return;
+
+      this.menuIsOpened = menuIsOpened;
+      const eventType = menuIsOpened ? 'openMenu' : 'closeMenu';
+      const dom: HTMLDivElement|null = document.querySelector('#' + style.locals.titlebar);
+      if(dom){
+        const c_event: CustomEvent = new CustomEvent<Menu>(eventType, {detail: this});
+        dom.dispatchEvent(c_event);
+      }
+    }, 0);
   }
 
   // Uncheck all radio items from the same group in this menu

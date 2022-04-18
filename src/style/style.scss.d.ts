@@ -14,7 +14,9 @@ declare namespace StyleScssNamespace {
     darwin: string;
     disabled: string;
     dragregion: string;
+    group: string;
     'hide-menu': string;
+    hr: string;
     icon: string;
     inactive: string;
     left: string;

@@ -15,22 +15,27 @@
 
 #titlebar {
   font-family: Segoe WPC, Segoe UI, sans-serif;
-  font-size: 13px;
   box-sizing: border-box;
-  background-color: #fff;
-  color: rgb(0, 0, 0);
+  height: 30px;
+  line-height: 30px;
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+
   width: 100%;
   padding-left: env(titlebar-area-x, 0);
   padding-right: calc(100vw - env(titlebar-area-width, 100vw));
-  height: 30px;
-  position: relative;
   user-select: none;
-  display: flex;
-  line-height: 30px;
   justify-content: left;
   align-items: center;
-  flex-shrink: 0;
   overflow: visible;
+
+  /*
+  //스킨
+  background-color: #fff;
+  color: rgb(0, 0, 0);
+  font-size: 13px;
+  */
 
   &:not(.maximized) {
     #controls #restore {
@@ -63,7 +68,7 @@
     #title,
     #menubar .button:not(:hover) .title,
     #menubar .button:not(:hover) .accelerator {
-      opacity: 0.5;
+      opacity: 0.3;
     }
 
     #dragregion {
@@ -99,7 +104,7 @@
   &.win {
     &.inactive {
       .button:not(:hover):not(.disabled) svg {
-        opacity: 0.5;
+        opacity: 0.3;
       }
     }
 
@@ -277,10 +282,13 @@
       white-space: nowrap;
       outline: 0;
 
+      /*
+      //스킨
       &:hover,
       &.active {
         background-color: rgba(0, 0, 0, 0.1);
       }
+      */
 
       .arrow,
       .check,
@@ -290,8 +298,8 @@
       }
 
       &.disabled {
-        opacity: 0.5;
-        pointer-events: none;
+        opacity: 0.3;
+        //pointer-events: none;
       }
 
       .icon {
@@ -300,6 +308,7 @@
         object-fit: contain;
         height: 16px;
         width: 16px;
+        margin: 0 5px;
       }
 
       .submenu {
@@ -309,11 +318,13 @@
         left: 0;
         opacity: 1;
         z-index: 2000;
-        background-color: #dadada;
         padding: 8px 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         max-height: calc(100vh - 30px);
         box-sizing: border-box;
+
+        //스킨
+        //background-color: #dadada;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 
         .button {
           &:not(.separator) {
@@ -327,15 +338,6 @@
             line-height: 23px;
           }
 
-          &.separator {
-            display: block;
-            margin: 8px 10px;
-            height: 1px;
-            background-color: #000;
-            pointer-events: none;
-            opacity: 0.3;
-          }
-
           .accelerator,
           .title {
             display: inline-block;
@@ -344,6 +346,7 @@
           .title {
             padding-right: 36px;
             margin-right: auto;
+            margin-left: 10px;
           }
 
           .arrow {
@@ -357,6 +360,49 @@
             display: block;
             left: 8px;
           }
+
+          &.separator {
+            //display: block;
+            padding: 8px 10px;
+            //height: 1px;
+            flex: 1;
+            height: 100%;
+            display: flex;
+
+            //스킨
+            //pointer-events: none;
+            //background-color: #000;
+            //opacity: 0.3;
+            opacity: 1;
+
+            .title {
+              padding-right: 36px;
+              margin-right: auto;
+            }
+
+            .hr{
+              display: block;
+              //margin: 8px 10px;
+              height: 1px;
+              width: 100%;
+            }
+          }
+
+          // label이 지정된 separator 라인
+          &.group {
+            //pointer-events: none;
+            padding: 0;
+            //margin-top: 5px;
+
+            .separator {
+              padding: 0 10px 0 0;
+            }
+            .title {
+              padding: 0 10px;
+              margin: 0;
+            }
+          }
+
         }
 
         .submenu {
@@ -372,7 +418,7 @@
 
   #title {
     flex: 0 1 auto;
-    font-size: 12px;
+    //font-size: 12px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -417,9 +463,11 @@
     svg {
       margin: 10px 0px;
 
+      /* 스킨
       & > * {
         fill: rgb(0, 0, 0);
       }
+      */
     }
   }
 }
