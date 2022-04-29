@@ -3,8 +3,6 @@ export interface TitleBarOptions {
   backdrop?: boolean;
   // blur 발생시 메뉴 창 닫기
   useBlurClose?: boolean;
-  // disabled 된 아이템, separator 클릭했을때 닫기
-  closeDisabledItemOnClick?: boolean;
   // 새로 열릴때 hook 함수 지정할 수있음 (메뉴 내용 갱신하기 위해 사용)
   // index: 열릴 menu index
   onOpenMenuHook?: (index: number) => boolean;
@@ -40,7 +38,6 @@ export const Options = {
     _dev: false,
     backdrop: true,
     useBlurClose: true,
-    closeDisabledItemOnClick: true,
     onOpenMenuHook: undefined,
 
     backgroundColor: '#fff',

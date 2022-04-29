@@ -57,8 +57,7 @@
             background-color: rgba(0, 0, 0, 0.1);
         }
         .custom-titlebar-menu-active,
-        .custom-titlebar-menu-item:hover,
-        .custom-titlebar-menu-item:active{
+        .custom-titlebar-menu-item:hover{
             background-color: #00a6ff;
         }
         /* Style of the separators.*/
@@ -72,9 +71,12 @@
         }
         /* Style of the submenu items.*/
         .custom-titlebar-submenu-item{}
-        .custom-titlebar-submenu-item:hover,
-        .custom-titlebar-submenu-item:active{
+        .custom-titlebar-submenu-item:hover{
             background-color: rgba(0, 166, 255, 0.3);
+        }
+
+        .custom-titlebar-disabled-item:hover{
+            background-color: transparent;
         }
 
         .custom-titlebar-submenu-item svg {
@@ -83,22 +85,25 @@
         .custom-titlebar-submenu-item svg > * {
             fill: white;
         }
-        .custom-titlebar-submenu-item:hover > svg > *,
-        .custom-titlebar-submenu-item:active > svg > *{
+        .custom-titlebar-submenu-item:hover > svg > *{
             fill: red;
         }
         /* 그룹 제목만 표시*/
         .custom-titlebar-group{
-            /*padding: 0px 10px;*/
+            margin: 15px 0 !important;
         }
         .custom-titlebar-separator-line{
             background-color: #000;
+            height: 5px !important;
         }
         .custom-titlebar-group-label{
         }
         /*disabled 된 아이템 클릭했을때 닫기하려면 none 설정*/
         .custom-titlebar-disabled-item{
             /*pointer-events: none;*/
+        }
+        .custom-titlebar-separator {
+            padding: 15px;
         }
     </style>
 </head>
@@ -130,9 +135,9 @@
         onClose: () => win.close(),
         isMaximized: () => maximized,
 
-        backdrop: true,
-        useBlurClose: false,
-        closeDisabledItemOnClick: false,
+        _dev: true,
+        backdrop: false,
+        // useBlurClose: false,
         menu: [{label: 'Item 1', id: 'item1'}]
     }, dom);
 
@@ -255,7 +260,6 @@
     */
     const menu1 = [
         {
-            // enabled: false,
             label: 'Menu 1',
             submenu: [
                 {
@@ -287,6 +291,7 @@
                 },
                 {
                     // icon: 'favicon.png',
+                    enabled: false,
                     label: 'sub Menu with sub Menu',
                     iconSelector: '[icon-import="a"]',
                     submenu: [

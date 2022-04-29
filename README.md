@@ -454,18 +454,19 @@ The following CSS classes exist and can be used to customize the titlebar.
 | `custom-titlebar-controls`        | Style of the window controls.              |
 | `custom-titlebar-menu-item`       | Style of the main menu items.              |
 | `custom-titlebar-separator`       | Style of the separators.                   |
-| `custom-titlebar-separator-line`  | separators 라인 스타일.                    |
 | `custom-titlebar-submenu`         | Style of the submenus.                     |
 | `custom-titlebar-submenu-item`    | Style of the submenu items.                |
 
 ### 추가된 CSS Class
 
-| Class name                    | Description                                    |
-|-------------------------------|------------------------------------------------|
-| `backdrop`                    | backdrop 스타일                                |
-| `custom-titlebar-menu-active` | 현재 활성화 상태의 메뉴 아이템.                |
-| `custom-titlebar-group`       | label이 설정된 그룹(separator 라인) 아이템.    |
-| `custom-titlebar-group-label` | 그룹 아이템의 label 스타일.                    |
+| Class name                        | Description                                  |
+|-----------------------------------|----------------------------------------------|
+| `backdrop`                        | backdrop 스타일                              |
+| `custom-titlebar-menu-active`     | 현재 활성화 상태의 메뉴 아이템.              |
+| `custom-titlebar-group`           | label이 설정된 그룹(separator 라인) 아이템.  |
+| `custom-titlebar-group-label`     | 그룹 아이템의 label 스타일.                  |
+| `custom-titlebar-separator-line`  | separators 라인 스타일.                      |
+| `custom-titlebar-disabled-item`   | 비활성 항목 스타일.                          |
 
 ----
 
@@ -581,8 +582,7 @@ titlebar.updateOptions({
 
 ### useBlurClose 옵션
 윈도우창이 포커싱을 잃었을때 메뉴 창을 닫을지(true) 여부 (default=true)
-### closeDisabledItemOnClick 옵션
-비활성화 메뉴 또는 separator 항목을 클릭한 경우 메뉴 창을 닫을지(true) 여부 (default=true)
+
 ### _dev 옵션
 개발용으로 사용. true로 지정하면 blur, mouseleave 이벤트에 대해서 창을 닫지 않음 (default=false)
 

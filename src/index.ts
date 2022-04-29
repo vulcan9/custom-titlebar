@@ -125,7 +125,9 @@ export default class Titlebar {
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);
     window.addEventListener('resize', onResize);
-    window.addEventListener('click', onClick);
+
+    titlebar.addEventListener('openMenu', onOpenMenu);
+    titlebar.addEventListener('closeMenu', onCloseMenu);
   }
 
   updateOptions(titleBarOptions: TitleBarOptions): void {
@@ -206,8 +208,6 @@ const onFocus = () => {
   titlebar.classList.remove(style.locals.inactive);
 };
 
-const onClick = () => menu?.closeSubMenu();
-
 const onResize = debounce(() => resized(), 100);
 
 const resized = () => {
@@ -252,6 +252,13 @@ const getMenuItemById = (id: number, menu = menuTemplate): Record<string, any> |
 };
 
 const applyOptions = (o: TitleBarOptions, context: Titlebar) => {
+
+  // 개발용 경고
+  if(Options.values._dev){
+    Object(window)._style = style;
+    window.console.error('임시 개발용 (submenu, blur 안닫음) 삭제할것');
+  }
+
   if (o.backgroundColor) {
     updateBackground(o.backgroundColor);
   }
@@ -320,8 +327,6 @@ const applyOptions = (o: TitleBarOptions, context: Titlebar) => {
   if (typeof o.hideControlsOnDarwin != 'undefined') {
     controls.style.visibility = o.hideControlsOnDarwin && Options.getPlatform() == 'darwin' ? 'hidden' : 'visible';
   }
-
-  applyBackdrop();
 };
 
 const applyTheme = () => {
@@ -466,22 +471,24 @@ const getBrightness = (rgb: Array<number>): number => {
 };
 
 //-------------------------------------
-// backdrop
+// onClick 이벤트 등록
 //-------------------------------------
 
-const applyBackdrop = ()=>{
-  titlebar.removeEventListener('openMenu', onOpenMenu);
-  titlebar.removeEventListener('closeMenu', onCloseMenu);
-
-  if(Options.values.backdrop){
-    titlebar.addEventListener('openMenu', onOpenMenu);
-    titlebar.addEventListener('closeMenu', onCloseMenu);
-  }
-}
+const onClick = () => menu?.closeSubMenu();
 
 const onOpenMenu = (e: Event): void =>{
-  titlebar.classList.add('backdrop');
+  window.addEventListener('click', onClick);
+  // window.console.error('open');
+
+  // backdrop
+  if(Options.values.backdrop){
+    titlebar.classList.add('backdrop');
+  }
 }
 const onCloseMenu = (e: Event): void =>{
+  window.removeEventListener('click', onClick);
+  // window.console.error('close');
+
+  // backdrop
   titlebar.classList.remove('backdrop');
 }

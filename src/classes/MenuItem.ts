@@ -52,11 +52,18 @@ export default class MenuItem {
 
     let line;
     if (menuItem.label) {
+      if(isGroupSeparator) {
+        line = document.createElement('div');
+        this.element.append(line);
+        setLine(line);
+      }
+
       // Add label
       const label = document.createElement('div');
       label.classList.add(style.locals.title);
       label.innerText = menuItem.label;
       this.element.append(label);
+
       if(isGroupSeparator) {
         label.classList.add('custom-titlebar-group-label');
       }
@@ -70,6 +77,10 @@ export default class MenuItem {
         line = this.element;
       }
 
+      setLine(line);
+    }
+
+    function setLine(line: HTMLDivElement): void{
       const hr = document.createElement('div');
       hr.classList.add(style.locals.hr);
       hr.classList.add('custom-titlebar-separator-line');
@@ -107,7 +118,9 @@ export default class MenuItem {
       // Add tooltip
       this.element.title = menuItem.toolTip || menuItem.tooltip;
     }
-    if (menuItem.enabled === false) {
+
+    const isDisable = (menuItem.enabled === false);
+    if (isDisable) {
       // Disable item
       this.element.classList.add(style.locals.disabled);
       this.element.classList.add('custom-titlebar-disabled-item');
@@ -158,12 +171,6 @@ export default class MenuItem {
       case 'radio':
         this.element.onclick = (e) => {
           e.stopPropagation();
-
-          // 마우스 클릭 막음 (pointer-events: none; 사용 안함)
-          if(!Options.values.closeDisabledItemOnClick){
-            if (menuItem.enabled === false) return;
-          }
-
           parent.closeSubMenu(true);
 
           // Update checked state before calling the click method
@@ -216,13 +223,6 @@ export default class MenuItem {
           this.element.classList.add(style.locals['group']);
         }else{
           this.element.classList.add(style.locals.separator);
-        }
-
-        // 마우스 클릭 막음 (pointer-events: none; 사용 안함)
-        if(!Options.values.closeDisabledItemOnClick){
-          this.element.onclick = (e) => {
-            e.stopPropagation();
-          }
         }
         break;
     }

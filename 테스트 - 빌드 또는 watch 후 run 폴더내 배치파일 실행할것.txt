@@ -7,3 +7,5 @@ separator 라벨 지정 가능
 
 webpack watch --mode development
 npm run watch
+
+npm run build
