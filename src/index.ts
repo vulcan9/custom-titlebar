@@ -256,7 +256,7 @@ const applyOptions = (o: TitleBarOptions, context: Titlebar) => {
   // 개발용 경고
   if(Options.values._dev){
     Object(window)._style = style;
-    window.console.error('임시 개발용 (submenu, blur 안닫음) 삭제할것');
+    window.console.warn('[Custom-titlebar] 임시 개발용 (submenu, blur 안닫음) 삭제할것');
   }
 
   if (o.backgroundColor) {
