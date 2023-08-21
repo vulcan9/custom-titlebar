@@ -10,12 +10,14 @@
         .custom-titlebar{
             height: 60px;
         }
-        .custom-titlebar-appicon{
-            height: 30px;
-            !*position: absolute;*!
+        */
+
+        #custom-titlebar-appicon{
+            width: 100px;
+            height: 100px;
+            position: absolute;
             top: 0;
         }
-        */
 
         body{
             background-color: rgba(0, 0, 0, 0.34);
@@ -109,8 +111,12 @@
 </head>
 <body>
 <div id='custom-titlebar'></div>
-<h1>Hello World!</h1>
+<h1>Hello World~~~!</h1>
 <button onclick="alert('click');">마우스 테스트</button>
+
+<div id='custom-titlebar2'></div>
+
+
 <script>
     // 버튼 아이콘 구별하기 위해 사용됨
     const {platform} = require('process');
@@ -126,20 +132,26 @@
         maximized = false;
     });
 
-    const dom = document.querySelector('#custom-titlebar');
     const titlebar = new Titlebar({
+        instanceID: 'titlebar1',
         // backgroundColor: '#37474f',
+
+        // windowControlsOverlay: false,
         platform: platform,
         onMinimize: () => win.minimize(),
         onMaximize: () => maximized ? win.restore() : win.maximize(),
         onClose: () => win.close(),
         isMaximized: () => maximized,
+        // 닫기 버튼 활성화
+        closeable: true,
+        // 타이틀바 드래그
+        drag: true,
 
         _dev: true,
         backdrop: false,
-        // useBlurClose: false,
+        useBlurClose: true,
         menu: [{label: 'Item 1', id: 'item1'}]
-    }, dom);
+    }, document.querySelector('#custom-titlebar'));
 
     /*
     const menuItem = titlebar.getMenuItemById('item1');
@@ -234,9 +246,8 @@
         // menu: Menu.getApplicationMenu(),
         // condensed: 'true', // 햄버거 메뉴
         // titleHorizontalAlignment: 'left',
-        // windowControlsOverlay: true
         // backgroundUnfocusEffect: false,
-        // icon: 'favicon.ico',
+        icon: 'favicon.png',
         // titleHorizontalAlignment: 'left',
         menu: menu,
 
@@ -309,10 +320,10 @@
     ];
     let lastmenu = menu;
     function onOpenMenuHook(index){
-        window.console.error('onOpenMenu : ', index);
         lastmenu = (lastmenu === menu) ? menu1 : menu;
 
         titlebar.updateOptions({
+            icon: titlebar.options.icon ? '' : 'favicon.png',
             menu: lastmenu
         });
 
@@ -322,6 +333,27 @@
 
     // DOM 까지 모두 제거
     // titlebar.dispose();
+
+    const titlebar2 = new Titlebar({
+        instanceID: 'titlebar2',
+        // backgroundColor: '#37474f',
+
+        // windowControlsOverlay: false,
+        platform: platform,
+        onMinimize: () => win.minimize(),
+        onMaximize: () => maximized ? win.restore() : win.maximize(),
+        onClose: () => win.close(),
+        isMaximized: () => maximized,
+        // 닫기 버튼 활성화
+        closeable: true,
+        // 타이틀바 드래그
+        drag: true,
+
+        _dev: true,
+        backdrop: false,
+        useBlurClose: true,
+        menu: menu1
+    }, document.querySelector('#custom-titlebar2'));
 </script>
 </body>
 </html>
