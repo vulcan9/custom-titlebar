@@ -118,45 +118,6 @@
 
 
 <script>
-    // 버튼 아이콘 구별하기 위해 사용됨
-    const {platform} = require('process');
-    console.error('platform : ', platform);
-
-    const win = nw.Window.get();
-    let maximized = false;
-
-    win.onMaximized.addListener(() => {
-        maximized = true;
-    });
-    win.onRestore.addListener(() => {
-        maximized = false;
-    });
-
-    const titlebar = new Titlebar({
-        instanceID: 'titlebar1',
-        // backgroundColor: '#37474f',
-
-        // windowControlsOverlay: false,
-        platform: platform,
-        onMinimize: () => win.minimize(),
-        onMaximize: () => maximized ? win.restore() : win.maximize(),
-        onClose: () => win.close(),
-        isMaximized: () => maximized,
-        // 닫기 버튼 활성화
-        closeable: true,
-        // 타이틀바 드래그
-        drag: true,
-
-        _dev: true,
-        backdrop: false,
-        useBlurClose: true,
-        menu: [{label: 'Item 1', id: 'item1'}]
-    }, document.querySelector('#custom-titlebar'));
-
-    /*
-    const menuItem = titlebar.getMenuItemById('item1');
-    console.log(menuItem.label); // Item 1
-    */
 
     // With a menu template
     const menu = [
@@ -242,33 +203,6 @@
             ]
         }
     ];
-    titlebar.updateOptions({
-        // menu: Menu.getApplicationMenu(),
-        // condensed: 'true', // 햄버거 메뉴
-        // titleHorizontalAlignment: 'left',
-        // backgroundUnfocusEffect: false,
-        icon: 'favicon.png',
-        // titleHorizontalAlignment: 'left',
-        menu: menu,
-
-        // Or with getApplicationMenu in Electron
-        // menu: window.nw.Menu.getApplicationMenu(),
-
-        height: 25,
-        onOpenMenuHook: onOpenMenuHook
-    });
-
-    /*
-    var titlebarDOM = document.querySelector('.custom-titlebar');
-    titlebarDOM.addEventListener('openMenu', onOpenMenu);
-    titlebarDOM.addEventListener('closeMenu', onCloseMenu);
-    function onOpenMenu (e){
-        window.console.error('titlebarDOM onOpenMenu : ', e.detail);
-    }
-    function onCloseMenu(e){
-        window.console.error('titlebarDOM onCloseMenu : ', e.detail);
-    }
-    */
     const menu1 = [
         {
             label: 'Menu 1',
@@ -318,42 +252,126 @@
             ]
         }
     ];
-    let lastmenu = menu;
-    function onOpenMenuHook(index){
-        lastmenu = (lastmenu === menu) ? menu1 : menu;
+
+    // 버튼 아이콘 구별하기 위해 사용됨
+    const {platform} = require('process');
+    console.error('platform : ', platform);
+
+    const win = nw.Window.get();
+    let maximized = false;
+
+    win.onMaximized.addListener(() => {
+        maximized = true;
+    });
+    win.onRestore.addListener(() => {
+        maximized = false;
+    });
+
+    (()=>{
+        // return;
+        const titlebar = new Titlebar({
+            instanceID: 'titlebar1',
+            // backgroundColor: '#37474f',
+
+            windowControlsOverlay: true,
+            platform: platform,
+            onMinimize: () => win.minimize(),
+            onMaximize: () => maximized ? win.restore() : win.maximize(),
+            onClose: () => win.close(),
+            isMaximized: () => maximized,
+            // 닫기 버튼 활성화
+            closeable: true,
+            // 타이틀바 드래그
+            drag: true,
+            title: '사용자가 지정한 타이틀 표시',
+
+            _dev: true,
+            backdrop: false,
+            useBlurClose: true,
+            menu: [{label: 'Item 1', id: 'item1'}]
+        }, document.querySelector('#custom-titlebar'));
+
+        /*
+        const menuItem = titlebar.getMenuItemById('item1');
+        console.log(menuItem.label); // Item 1
+        */
 
         titlebar.updateOptions({
-            icon: titlebar.options.icon ? '' : 'favicon.png',
-            menu: lastmenu
+            // menu: Menu.getApplicationMenu(),
+            // condensed: 'true', // 햄버거 메뉴
+            // titleHorizontalAlignment: 'left',
+            // backgroundUnfocusEffect: false,
+            icon: 'favicon.png',
+            // titleHorizontalAlignment: 'left',
+            menu: menu,
+
+            // Or with getApplicationMenu in Electron
+            // menu: window.nw.Menu.getApplicationMenu(),
+
+            height: 25,
+            onOpenMenuHook: onOpenMenuHook
         });
 
-        // 수동으로 index 열기
-        // titlebar.open(index);
-    }
+        /*
+        var titlebarDOM = document.querySelector('.custom-titlebar');
+        titlebarDOM.addEventListener('openMenu', onOpenMenu);
+        titlebarDOM.addEventListener('closeMenu', onCloseMenu);
+        function onOpenMenu (e){
+            window.console.error('titlebarDOM onOpenMenu : ', e.detail);
+        }
+        function onCloseMenu(e){
+            window.console.error('titlebarDOM onCloseMenu : ', e.detail);
+        }
+        */
+        let lastmenu = menu;
+        function onOpenMenuHook(index){
+            lastmenu = (lastmenu === menu) ? menu1 : menu;
+
+            titlebar.updateOptions({
+                icon: titlebar.options.icon ? '' : 'favicon.png',
+                menu: lastmenu
+            });
+
+            // 수동으로 index 열기
+            // titlebar.open(index);
+        }
+    })();
 
     // DOM 까지 모두 제거
     // titlebar.dispose();
 
-    const titlebar2 = new Titlebar({
-        instanceID: 'titlebar2',
-        // backgroundColor: '#37474f',
+    (()=>{
+        // return;
+        const titlebar2 = new Titlebar({
+            instanceID: 'titlebar2',
+            // backgroundColor: '#37474f',
 
-        // windowControlsOverlay: false,
-        platform: platform,
-        onMinimize: () => win.minimize(),
-        onMaximize: () => maximized ? win.restore() : win.maximize(),
-        onClose: () => win.close(),
-        isMaximized: () => maximized,
-        // 닫기 버튼 활성화
-        closeable: true,
-        // 타이틀바 드래그
-        drag: true,
+            // windowControlsOverlay: false,
+            /*
+            platform: platform,
+            onMinimize: () => win.minimize(),
+            onMaximize: () => maximized ? win.restore() : win.maximize(),
+            onClose: () => win.close(),
+            isMaximized: () => maximized,
+            // 닫기 버튼 활성화
+            closeable: true,
+            */
 
-        _dev: true,
-        backdrop: false,
-        useBlurClose: true,
-        menu: menu1
-    }, document.querySelector('#custom-titlebar2'));
+            icon: 'favicon.png',
+
+            // onlyCondensedButton: true 이면 설정값이 강제로 적용됨
+            onlyCondensedButton: true,
+
+            _dev: true,
+            backdrop: false,
+            useBlurClose: true,
+            menu: menu1
+        }, document.querySelector('#custom-titlebar2'));
+
+
+        // (condensed && !drag && (hideTitle || !title))
+
+    })();
 </script>
 </body>
 </html>

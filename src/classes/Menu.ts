@@ -103,7 +103,6 @@ export default class Menu {
 
             this.menuIsOpened = menuIsOpened;
 
-            // const dom: HTMLDivElement|null = document.querySelector('#' + style.locals.titlebar);
             const dom = Titlebar.getInstance(this.instanceID).titlebar;
             if (dom) {
                 const eventType = menuIsOpened ? 'openMenu' : 'closeMenu';

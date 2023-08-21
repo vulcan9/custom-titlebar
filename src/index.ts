@@ -50,6 +50,7 @@ export default class Titlebar {
     constructor(titleBarOptions?: TitleBarOptions, dom?: HTMLDivElement) {
         // Inject style
         (style as any).use();
+        // console.error('style: ', style.locals);
 
         // Create titlebar
         const titlebar = dom ? dom : document.createElement('div');
@@ -72,6 +73,7 @@ export default class Titlebar {
         // Create menubar
         const menubar = document.createElement('div');
         menubar.id = style.locals.menubar;
+        appicon.classList.add('custom-titlebar-menubar');
         titlebar.append(menubar);
 
         // Create title
@@ -158,7 +160,6 @@ export default class Titlebar {
         // Apply theme
         this.windowControlsOverlayListener();
         this.applyTheme();
-        this.updateTitle();
 
         // Event listeners
         this.listener = {
@@ -181,11 +182,12 @@ export default class Titlebar {
 
     updateOptions(titleBarOptions: TitleBarOptions): void {
         this.options = Object.assign({}, this.options, titleBarOptions);
-        this.applyOptions();
-    }
+        Options.setPlatform(this.options.platform);
 
-    updateTitle(newTitle?: string): void {
-        this.titlecontainer.innerText = newTitle || window.document.title;
+        // onlyCondensedButton: true 이면 버튼으로만 사용됨
+        Options.checkCondensedButton(this.options);
+
+        this.applyOptions();
     }
 
     /*
@@ -210,7 +212,6 @@ export default class Titlebar {
 
     buildMenu(condensed = false): void {
         this.menuCondensed = condensed;
-
         const menubar = this.menubar;
         const menuTemplate = this.menuTemplate;
 
@@ -362,15 +363,57 @@ export default class Titlebar {
             window.console.warn("[Custom-titlebar] 임시 개발용 (submenu, blur 안닫음) 삭제할것");
         }
 
-        if (o.backgroundColor) {
-            this.updateBackground(o.backgroundColor);
+        this.updateTitle();
+        this.updateHorizontalAlignment();
+        this.updateIcon();
+        this.updateSystemButton();
+        this.updateBackground();
+
+        if (o.overflow) {
+            if (this.container) this.container.style.overflow = o.overflow;
         }
-        if (o.title) {
-            this.updateTitle(o.title);
+        if (typeof o.drag != 'undefined') {
+            this.titlebar.classList.toggle(style.locals.nodrag, !o.drag);
         }
-        if (typeof o.icon != 'undefined') {
-            this.updateIcon(o.icon);
+        if (o.platform) this.applyTheme();
+
+        if (typeof o.hideMenuOnDarwin != 'undefined') {
+            this.titlebar.classList.toggle(style.locals['hide-menu'], o.hideMenuOnDarwin);
         }
+        if (o.height) {
+            this.titlebarHeight = o.height;
+            this.updateHeight(o.height);
+        }
+
+        this.updateDragregion();
+        this.updateMenu();
+        this.updateMenuSize();
+    }
+
+    updateTitle(): void {
+        this.titlecontainer.innerText = this.options.title || window.document.title;
+        this.title.style.display = this.options.hideTitle ? 'none' : 'block';
+    }
+
+    updateHorizontalAlignment(): void {
+        const position = this.options.titleHorizontalAlignment;
+        if (typeof position === 'undefined') return;
+
+        this.title.classList.toggle(style.locals.left, position == 'left');
+        this.title.classList.toggle(style.locals.right, position == 'right');
+    }
+
+    updateIcon(): void {
+        const icon = this.options.icon;
+        if (typeof icon === 'undefined') return;
+
+        this.appicon.style.backgroundImage = icon ? `url('${icon}')` : 'unset';
+        this.appicon.style.display = icon ? 'inline-block' : 'none';
+    }
+
+    updateSystemButton(): void {
+        const o = this.options;
+
         if (typeof o.minimizable != 'undefined') {
             this.minimizeWindow.classList.toggle(style.locals.disabled, !o.minimizable);
         }
@@ -396,36 +439,7 @@ export default class Titlebar {
         if (o.isMaximized) {
             this.titlebar.classList.toggle(style.locals.maximized, o.isMaximized());
         }
-        if (typeof o.menu != 'undefined') {
-            this.updateMenu(o.menu);
-        }
-        if (typeof o.condensed != 'undefined') {
-            this.updateMenuSize();
-        }
 
-        if (o.overflow) {
-            if (this.container) this.container.style.overflow = o.overflow;
-        }
-
-        if (typeof o.drag != 'undefined') {
-            this.titlebar.classList.toggle(style.locals.nodrag, !o.drag);
-        }
-        if (o.titleHorizontalAlignment) {
-            this.updateHorizontalAlignment(o.titleHorizontalAlignment);
-        }
-        if (o.platform) {
-            this.applyTheme();
-        }
-        if (typeof o.hideMenuOnDarwin != 'undefined') {
-            this.titlebar.classList.toggle(style.locals['hide-menu'], o.hideMenuOnDarwin);
-        }
-        if (o.height) {
-            this.titlebarHeight = o.height;
-            this.updateHeight(o.height);
-        }
-        if (typeof o.backgroundUnfocusEffect != 'undefined') {
-            this.dragregion.style.opacity = o.backgroundUnfocusEffect ? '1' : '0';
-        }
         if (typeof o.windowControlsOverlay != 'undefined') {
             this.controls.style.display = o.windowControlsOverlay ? 'flex' : 'none';
         }
@@ -434,29 +448,46 @@ export default class Titlebar {
         }
     }
 
-    updateBackground(color: string): void {
+    updateBackground(): void {
+        const color = this.options.backgroundColor;
+        if (typeof color === 'undefined') return;
+        if (color === 'transparent'){
+            this.titlebar.classList.toggle(style.locals.dark, false);
+            this.titlebar.style.backgroundColor = 'transparent';
+            return;
+        }
+
         const rgb = parseColor(color);
         const brightness = getBrightness(rgb);
         this.titlebar.classList.toggle(style.locals.dark, brightness <= 125);
         this.titlebar.style.backgroundColor = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
     }
 
-    updateIcon(icon: string | null): void {
-        this.appicon.style.backgroundImage = icon ? `url('${icon}')` : 'unset';
-        this.appicon.style.display = icon ? 'inline-block' : 'none';
+    updateDragregion(): void{
+        const backgroundUnfocusEffect = this.options.backgroundUnfocusEffect;
+        if (typeof backgroundUnfocusEffect === 'undefined') return;
+        this.dragregion.style.opacity = backgroundUnfocusEffect ? '1' : '0';
     }
 
-    updateMenu(template?: Record<string, any> | null): void {
+    updateMenu(): void {
+        // Record<string, any> | null
+        const template = this.options.menu;
+        if (typeof template === 'undefined') return;
+
         this.menuTemplate = template ? parseMenuTemplate(template) : null;
         this.buildMenu(this.menuCondensed);
     }
 
     // Check if the menu need to be condensed
     updateMenuSize(): void {
+        const condensed = this.options.condensed;
+        if (typeof condensed === 'undefined') return;
+
+
+
         if (this.titlebar.clientWidth > 0) {
-            if (!this.menuCondensed) {
-                this.menuSize = this.menubar.clientWidth;
-            }
+            this.menuSize = this.menubar.clientWidth;
+
             const w = this.menuSize + this.appicon.clientWidth + this.title.clientWidth + this.controls.clientWidth + 1;
             if (w > this.titlebarWidth() || this.options.condensed) {
                 if (!this.menuCondensed) {
@@ -467,17 +498,27 @@ export default class Titlebar {
                     this.buildMenu(false);
                 }
             }
+
+            //*
+            // .custom-titlebar CSS로 지정할것
+            if(this.options.onlyCondensedButton){
+                // 아이콘 크기만큼만 차지함
+                this.titlebar.style.width = this.menuSize + 'px';
+            }else{
+                // 100%
+                this.titlebar.style.width = '';
+            }
+            // */
+
         } else {
             setTimeout(() => this.updateMenuSize(), 10);
         }
     }
 
-    updateHorizontalAlignment(position: string): void {
-        this.title.classList.toggle(style.locals.left, position == 'left');
-        this.title.classList.toggle(style.locals.right, position == 'right');
-    }
-
     updateHeight(height: number): void {
+        // const height = this.options.height;
+        // if (typeof height === 'undefined') return;
+
         this.titlebar.style.height = height + 'px';
         if (this.container) this.container.style.height = `calc(100vh - ${height}px)`;
     }
