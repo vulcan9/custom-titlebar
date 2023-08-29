@@ -50,7 +50,9 @@ export default class Titlebar {
     constructor(titleBarOptions?: TitleBarOptions, dom?: HTMLDivElement) {
         // Inject style
         (style as any).use();
-        console.error('style: ', style.locals);
+        if (titleBarOptions?._dev){
+            window.console.log("[Custom-titlebar] style : ", style.locals);
+        }
 
         // Create titlebar
         const titlebar = dom ? dom : document.createElement('div');
