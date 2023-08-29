@@ -50,7 +50,7 @@ export default class Titlebar {
     constructor(titleBarOptions?: TitleBarOptions, dom?: HTMLDivElement) {
         // Inject style
         (style as any).use();
-        // console.error('style: ', style.locals);
+        console.error('style: ', style.locals);
 
         // Create titlebar
         const titlebar = dom ? dom : document.createElement('div');
@@ -62,6 +62,7 @@ export default class Titlebar {
         // Create drag region
         const dragregion = document.createElement('div');
         dragregion.id = style.locals.dragregion;
+        dragregion.classList.add('custom-titlebar-dragregion');
         titlebar.append(dragregion);
 
         // App icon
@@ -73,7 +74,7 @@ export default class Titlebar {
         // Create menubar
         const menubar = document.createElement('div');
         menubar.id = style.locals.menubar;
-        appicon.classList.add('custom-titlebar-menubar');
+        menubar.classList.add('custom-titlebar-menubar');
         titlebar.append(menubar);
 
         // Create title
