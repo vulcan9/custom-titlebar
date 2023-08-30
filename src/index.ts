@@ -317,7 +317,7 @@ export default class Titlebar {
         });
 
         // console.error('open: ', this.options.instanceID);
-        window.addEventListener('click', this.listener.onClick);
+        window.addEventListener('click', this.listener.onClick, true);
 
         // backdrop
         if (this.options.backdrop) {
@@ -327,7 +327,7 @@ export default class Titlebar {
 
     onCloseMenu(): void {
         // console.error('onCloseMenu: ', this.options.instanceID);
-        window.removeEventListener('click', this.listener.onClick);
+        window.removeEventListener('click', this.listener.onClick, true);
 
         // backdrop
         this.titlebar.classList.remove('backdrop');
