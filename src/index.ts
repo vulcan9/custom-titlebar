@@ -95,21 +95,25 @@ export default class Titlebar {
 
         const minimizeWindow = document.createElement('div');
         minimizeWindow.id = style.locals.minimize;
+        minimizeWindow.classList.add('custom-titlebar-minimize');
         minimizeWindow.classList.add(style.locals.button);
         minimizeWindow.title = 'Minimize';
         controls.append(minimizeWindow);
         const maximizeWindow = document.createElement('div');
         maximizeWindow.id = style.locals.maximize;
+        maximizeWindow.classList.add('custom-titlebar-maximize');
         maximizeWindow.classList.add(style.locals.button);
         maximizeWindow.title = 'Maximize';
         controls.append(maximizeWindow);
         const restoreWindow = document.createElement('div');
         restoreWindow.id = style.locals.restore;
+        restoreWindow.classList.add('custom-titlebar-restore');
         restoreWindow.classList.add(style.locals.button);
         restoreWindow.title = 'Restore';
         controls.append(restoreWindow);
         const closeWindow = document.createElement('div');
         closeWindow.id = style.locals.close;
+        closeWindow.classList.add('custom-titlebar-close');
         closeWindow.classList.add(style.locals.button);
         closeWindow.title = 'Close';
         controls.append(closeWindow);
@@ -202,7 +206,7 @@ export default class Titlebar {
     }
     */
 
-    getMenuItemById(id: number, menu = this.menuTemplate): Record<string, any> | null {
+    getMenuItemById(id: string, menu = this.menuTemplate): Record<string, any> | null {
         if (!menu) return null;
         let found = menu.items.find((item: Record<string, any>) => item.id === id) || null;
         for (let i = 0; !found && i < menu.items.length; i++) {
