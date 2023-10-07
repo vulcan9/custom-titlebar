@@ -1,19 +1,19 @@
 @media print {
-    #titlebar {
+    .custom-titlebar {
         display: none !important;
     }
-    #container {
+    .custom-titlebar-container {
         height: auto !important;
     }
 }
 
-#container {
+.custom-titlebar-container {
     position: relative;
     height: calc(100vh - 30px);
     overflow: auto;
 }
 
-#titlebar {
+.custom-titlebar {
     //font-family: Segoe WPC, Segoe UI, sans-serif;
     box-sizing: border-box;
     height: 30px;
@@ -30,91 +30,84 @@
     align-items: center;
     overflow: visible;
 
-    /*
-    //스킨
-    background-color: #fff;
-    color: rgb(0, 0, 0);
-    font-size: 13px;
-    */
-
-    &:not(.maximized) {
-        #controls #restore {
+    &:not(.tb-maximized) {
+        .custom-titlebar-controls .tb-restore {
             display: none;
         }
     }
 
-    &.maximized {
-        #controls #maximize {
+    &.tb-maximized {
+        .custom-titlebar-controls .tb-maximize {
             display: none;
         }
     }
 
-    &.hide-menu.darwin {
-        #menubar {
+    &.tb-hide-menu.tb-darwin {
+        .custom-titlebar-menubar {
             display: none;
         }
     }
 
     /* Drag disabled */
-    &.nodrag {
-        #dragregion,
-        #appicon {
+    &.tb-nodrag {
+        .custom-titlebar-dragregion,
+        .custom-titlebar-appicon {
             -webkit-app-region: no-drag;
         }
     }
 
     /* Inactive window */
-    &.inactive {
-        #title,
-        #menubar .button:not(:hover) .title,
-        #menubar .button:not(:hover) .accelerator {
+    &.tb-inactive {
+        .custom-titlebar-title,
+        .custom-titlebar-menubar .tb-button:not(:hover) .tb-title,
+        .custom-titlebar-menubar .tb-button:not(:hover) .tb-accelerator {
             opacity: 0.3;
         }
 
-        #dragregion {
+        .custom-titlebar-dragregion {
             background: rgba(255, 255, 255, 0.17);
         }
     }
 
     /* Dark skin */
-    &.dark {
+    &.tb-dark {
         color: rgb(255, 255, 255);
 
-        #menubar .button {
+        .custom-titlebar-menubar .tb-button {
             &:hover,
-            &.active {
+            &.tb-active {
                 background-color: rgba(255, 255, 255, 0.1);
             }
 
-            .submenu {
+            .custom-titlebar-submenu {
                 background-color: #252526;
 
-                .button.separator {
+                .tb-button.tb-separator {
                     background-color: #fff;
                 }
             }
         }
 
-        .button svg > * {
+        .tb-button svg > * {
             fill: rgb(255, 255, 255);
         }
     }
 
     /* Windows style */
-    &.win {
-        &.inactive {
-            .button:not(:hover):not(.disabled) svg {
+    &.tb-win {
+        &.tb-inactive {
+            .tb-button:not(:hover):not(.tb-disabled) svg {
                 opacity: 0.3;
             }
         }
 
-        &:not(.dark) {
-            #close:hover svg > * {
+        &:not(.tb-dark) {
+            .tb-close:hover svg > * {
                 fill: rgb(255, 255, 255);
             }
         }
 
-        &.dark #controls .button {
+        &.tb-dark .custom-titlebar-controls .tb-button {
             &:hover {
                 background-color: hsla(0, 0%, 100%, 0.1);
             }
@@ -124,26 +117,26 @@
             }
         }
 
-        #controls {
-            &.close-only {
-                #minimize,
-                #maximize {
+        .custom-titlebar-controls {
+            &.tb-close-only {
+                .tb-minimize,
+                .tb-maximize {
                     display: none;
                 }
 
-                #close {
+                .tb-close {
                     width: 30px;
                 }
             }
 
-            .button {
+            .tb-button {
                 width: 46px;
 
                 &:hover {
                     background-color: hsla(0, 0%, 0%, 0.1);
                 }
 
-                &#close:hover {
+                &.tb-close:hover {
                     background-color: rgba(232, 17, 35, 0.9);
                 }
 
@@ -151,7 +144,7 @@
                     background-color: hsla(0, 0%, 0%, 0.2);
                 }
 
-                &.disabled {
+                &.tb-disabled {
                     opacity: 0.2;
                 }
 
@@ -164,25 +157,25 @@
     }
 
     /* macOS style */
-    &.darwin {
-        &.inactive {
-            #controls:not(:hover) .button::before {
+    &.tb-darwin {
+        &.tb-inactive {
+            .custom-titlebar-controls:not(:hover) .tb-button::before {
                 background: #ddd !important;
             }
         }
 
-        #controls {
+        .custom-titlebar-controls {
             order: -1;
             flex-direction: row-reverse;
             margin: 0 8px;
 
             &:not(:hover) {
-                .button svg {
+                .tb-button svg {
                     display: none;
                 }
             }
 
-            .button {
+            .tb-button {
                 width: 20px;
 
                 &::before {
@@ -199,12 +192,12 @@
                     filter: brightness(80%);
                 }
 
-                &#minimize::before {
+                &.tb-minimize::before {
                     background: #fdbc40;
                 }
 
-                &#maximize,
-                &#restore {
+                &.tb-maximize,
+                &.tb-restore {
                     order: -1;
 
                     &::before {
@@ -212,11 +205,11 @@
                     }
                 }
 
-                &#close::before {
+                &.tb-close::before {
                     background: #fc5753;
                 }
 
-                &.disabled {
+                &.tb-disabled {
                     &::before {
                         background: #cfcfcf !important;
                     }
@@ -239,236 +232,7 @@
         }
     }
 
-    #dragregion {
-        top: 0;
-        left: 0;
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        -webkit-app-region: drag;
-    }
-
-    #appicon {
-        display: none;
-        min-width: 20px;
-        min-height: 20px;
-        position: relative;
-        z-index: 3000;
-        flex-shrink: 0;
-        background-repeat: no-repeat;
-        background-position: 50%;
-        background-size: 16px;
-        -webkit-app-region: drag;
-        vertical-align: top;
-    }
-
-    #menubar {
-        height: 100%;
-        display: flex;
-        flex-shrink: 1;
-        flex-wrap: nowrap;
-        z-index: 2500;
-
-        .button {
-            display: flex;
-            position: relative;
-            align-items: center;
-            box-sizing: border-box;
-            //padding: 0 8px;
-            cursor: default;
-            -webkit-app-region: no-drag;
-            zoom: 1;
-            white-space: nowrap;
-            outline: 0;
-
-            /*
-            //스킨
-            &:hover,
-            &.active {
-              background-color: rgba(0, 0, 0, 0.1);
-            }
-            */
-
-            .arrow,
-            .check,
-            .accelerator,
-            &.separator {
-                display: none;
-            }
-
-            &.disabled {
-                opacity: 0.3;
-                pointer-events: none;
-            }
-
-            .icon {
-                position: absolute;
-                left: 6px;
-                object-fit: contain;
-                min-height: 16px;
-                min-width: 16px;
-                margin: 0 5px;
-            }
-
-            .submenu {
-                position: absolute;
-                bottom: 0px;
-                transform: translateY(100%);
-                left: 0;
-                opacity: 1;
-                z-index: 2000;
-                padding: 8px 0;
-                max-height: calc(100vh - 30px);
-                box-sizing: border-box;
-
-                //스킨
-                //background-color: #dadada;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-
-                .button {
-                    &:not(.separator) {
-                        display: flex;
-                        flex: 1 1 auto;
-                        align-items: center;
-                        position: relative;
-                        padding: 0px 28px;
-                        margin: 1px 0px;
-                        height: 23px;
-                        line-height: 23px;
-                    }
-
-                    .accelerator,
-                    .title {
-                        display: inline-block;
-                    }
-
-                    .title {
-                        padding-right: 36px;
-                        margin-right: auto;
-                        margin-left: 10px;
-                    }
-
-                    .arrow {
-                        position: absolute;
-                        display: block;
-                        right: 8px;
-                    }
-
-                    .check {
-                        position: absolute;
-                        display: block;
-                        left: 8px;
-                    }
-
-                    &.separator {
-                        //display: block;
-                        //padding: 8px 10px;
-                        //height: 1px;
-                        flex: 1;
-                        height: 100%;
-                        display: flex;
-
-                        //스킨
-                        //pointer-events: none;
-                        //background-color: #000;
-                        //opacity: 0.3;
-                        opacity: 1;
-
-                        .title {
-                            padding-right: 36px;
-                            margin-right: auto;
-                        }
-
-                        .hr {
-                            display: block;
-                            //margin: 8px 10px;
-                            height: 1px;
-                            width: 100%;
-                        }
-                    }
-
-                    // label이 지정된 separator 라인
-                    &.group {
-                        //pointer-events: none;
-                        padding: 0;
-                        //margin-top: 5px;
-
-                        /*
-                        .separator {
-                          padding: 0;
-                        }
-                        .separator:first-child {
-                          padding-left: 10px;
-                        }
-                        .separator:last-child {
-                          padding-right: 10px;
-                        }
-                        */
-
-                        .title {
-                            padding: 0 10px;
-                            margin: 0;
-                        }
-                    }
-
-                }
-
-                .submenu {
-                    left: unset;
-                    right: 0px;
-                    transform: translateX(100%);
-                    top: -9px;
-                    bottom: auto;
-                }
-            }
-        }
-    }
-
-    #title {
-        flex: 0 1 auto;
-        //font-size: 12px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin-left: auto;
-        margin-right: auto;
-        zoom: 1;
-
-        &.left {
-            margin-left: 8px;
-        }
-
-        &.right {
-            margin-right: 8px;
-        }
-    }
-
-    #controls {
-        display: flex;
-        flex-grow: 0;
-        flex-shrink: 0;
-        text-align: center;
-        position: relative;
-        z-index: 3000;
-        -webkit-app-region: no-drag;
-        height: 100%;
-
-        .button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            line-height: 30px;
-            height: 100%;
-
-            &.disabled {
-                pointer-events: none;
-            }
-        }
-    }
-
-    .button {
+    .tb-button {
         svg {
             //margin: 10px 0px;
             margin: 0 5px;
@@ -479,5 +243,241 @@
             }
             */
         }
+    }
+}
+
+.custom-titlebar-dragregion {
+    top: 0;
+    left: 0;
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-app-region: drag;
+}
+
+.custom-titlebar-appicon {
+    display: none;
+    min-width: 20px;
+    min-height: 20px;
+    position: relative;
+    z-index: 3000;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 16px;
+    -webkit-app-region: drag;
+    vertical-align: top;
+}
+
+@mixin tb-item() {
+    .tb-arrow,
+    .tb-check,
+    .tb-accelerator,
+    &.tb-separator {
+        display: none;
+    }
+
+    &.tb-disabled {
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .tb-icon {
+        position: absolute;
+        left: 6px;
+        object-fit: contain;
+        min-height: 16px;
+        min-width: 16px;
+        margin: 0 5px;
+    }
+}
+
+.custom-titlebar-menubar {
+    //width: fit-content;
+    height: 100%;
+    display: flex;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+    z-index: 2500;
+
+    .tb-button {
+        display: flex;
+        position: relative;
+        align-items: center;
+        box-sizing: border-box;
+        //padding: 0 8px;
+        cursor: default;
+        -webkit-app-region: no-drag;
+        zoom: 1;
+        white-space: nowrap;
+        outline: 0;
+
+        /*
+        //스킨
+        &:hover,
+        &.tb-active {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+        */
+
+        @include tb-item();
+    }
+}
+
+.custom-titlebar-title {
+    flex: 0 1 auto;
+    //font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-left: auto;
+    margin-right: auto;
+    zoom: 1;
+
+    &.tb-left {
+        margin-left: 8px;
+    }
+
+    &.tb-right {
+        margin-right: 8px;
+    }
+}
+
+.custom-titlebar-controls {
+    display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-align: center;
+    position: relative;
+    z-index: 3000;
+    -webkit-app-region: no-drag;
+    height: 100%;
+
+    .tb-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        line-height: 30px;
+        height: 100%;
+
+        &.tb-disabled {
+            pointer-events: none;
+        }
+    }
+}
+
+.custom-titlebar-submenu {
+    position: absolute;
+    bottom: 0px;
+    transform: translateY(100%);
+    left: 0;
+    opacity: 1;
+    z-index: 2000;
+    padding: 8px 0;
+    max-height: calc(100vh - 30px);
+    box-sizing: border-box;
+
+    //스킨
+    //background-color: #dadada;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+
+    .tb-button {
+
+        @include tb-item();
+        &:not(.tb-separator) {
+            display: flex;
+            flex: 1 1 auto;
+            align-items: center;
+            position: relative;
+            padding: 0px 28px;
+            margin: 1px 0px;
+            height: 23px;
+            line-height: 23px;
+        }
+
+        .tb-accelerator,
+        .tb-title {
+            display: inline-block;
+        }
+
+        .tb-title {
+            padding-right: 36px;
+            margin-right: auto;
+            margin-left: 10px;
+        }
+
+        .tb-arrow {
+            position: absolute;
+            display: block;
+            right: 8px;
+        }
+
+        .tb-check {
+            position: absolute;
+            display: block;
+            left: 8px;
+        }
+
+        &.tb-separator {
+            //display: block;
+            //padding: 8px 10px;
+            //height: 1px;
+            flex: 1;
+            height: 100%;
+            display: flex;
+
+            //스킨
+            //pointer-events: none;
+            //background-color: #000;
+            //opacity: 0.3;
+            opacity: 1;
+
+            .tb-title {
+                padding-right: 36px;
+                margin-right: auto;
+            }
+
+            .tb-separator-line {
+                display: block;
+                //margin: 8px 10px;
+                height: 1px;
+                width: 100%;
+            }
+        }
+
+        // label이 지정된 separator 라인
+        &.group {
+            //pointer-events: none;
+            padding: 0;
+            //margin-top: 5px;
+
+            /*
+            .tb-separator {
+              padding: 0;
+            }
+            .tb-separator:first-child {
+              padding-left: 10px;
+            }
+            .tb-separator:last-child {
+              padding-right: 10px;
+            }
+            */
+
+            .tb-title {
+                padding: 0 10px;
+                margin: 0;
+            }
+        }
+
+    }
+
+    .custom-titlebar-submenu {
+        left: unset;
+        right: 0px;
+        transform: translateX(100%);
+        top: -9px;
+        bottom: auto;
     }
 }

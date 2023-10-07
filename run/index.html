@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="./lib/index.css" />
     <script src="./lib/index.js"></script>
     <style>
         /*
@@ -22,11 +23,13 @@
         body{
             background-color: rgba(0, 0, 0, 0.34);
         }
+        /*
         .custom-titlebar{
             position: fixed;
             top: 0;
             left: 0;
         }
+        */
 
         .backdrop:before{
             content: '';
@@ -58,12 +61,12 @@
         .custom-titlebar-menu-item{
             background-color: rgba(0, 0, 0, 0.1);
         }
-        .custom-titlebar-menu-active,
+        .tb-active,
         .custom-titlebar-menu-item:hover{
             background-color: #00a6ff;
         }
         /* Style of the separators.*/
-        .custom-titlebar-separator{
+        .tb-separator{
 
         }
         /* Style of the submenus.*/
@@ -77,7 +80,7 @@
             background-color: rgba(0, 166, 255, 0.3);
         }
 
-        .custom-titlebar-disabled-item:hover{
+        .tb-disabled:hover{
             background-color: transparent;
         }
 
@@ -91,20 +94,20 @@
             fill: red;
         }
         /* 그룹 제목만 표시*/
-        .custom-titlebar-group{
+        .tb-group{
             margin: 15px 0 !important;
         }
-        .custom-titlebar-separator-line{
+        .tb-separator-line{
             background-color: #000;
             height: 5px !important;
         }
-        .custom-titlebar-group-label{
+        .tb-group-label{
         }
         /*disabled 된 아이템 클릭했을때 닫기하려면 none 설정*/
-        .custom-titlebar-disabled-item{
+        .tb-disabled{
             /*pointer-events: none;*/
         }
-        .custom-titlebar-separator {
+        .tb-separator {
             padding: 15px;
         }
     </style>

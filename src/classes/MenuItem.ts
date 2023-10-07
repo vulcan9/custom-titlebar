@@ -1,9 +1,12 @@
-import style from '../style/style.scss';
+// import style from '../style/style.scss';
+import { cssStyle } from '../cssStyle';
 import svg from '../style/svg.json';
 import Menu from './Menu';
 import {Accelerator} from './Accelerator';
 import {ClickHandler} from './ClickHandler';
 import Titlebar from "../index";
+
+
 
 export default class MenuItem {
     element: HTMLDivElement;
@@ -18,7 +21,7 @@ export default class MenuItem {
 
         // Create item
         this.element = document.createElement('div');
-        this.element.classList.add(style.locals.button);
+        this.element.classList.add(cssStyle.locals.button);
 
         /*
         this.element.classList.add(
@@ -33,11 +36,9 @@ export default class MenuItem {
         const isGroupSeparator = (isSeparator && menuItem.label);
 
         if (isSeparator) {
-            // this.element.classList.add('custom-titlebar-separator');
-            // if(menuItem.label) this.element.classList.add(style.locals['group-separator']);
-            this.element.classList.add(isGroupSeparator ? 'custom-titlebar-group' : 'custom-titlebar-separator');
+            this.element.classList.add(isGroupSeparator ? cssStyle.locals.group : cssStyle.locals.separator);
         } else {
-            this.element.classList.add(parent.isSubMenu ? 'custom-titlebar-submenu-item' : 'custom-titlebar-menu-item');
+            this.element.classList.add(parent.isSubMenu ? cssStyle.locals.submenuItem : cssStyle.locals.menuItem);
         }
         //*/
 
@@ -56,12 +57,12 @@ export default class MenuItem {
 
             // Add label
             const label = document.createElement('div');
-            label.classList.add(style.locals.title);
+            label.classList.add(cssStyle.locals.menuTitle);
             label.innerText = menuItem.label;
             this.element.append(label);
 
             if (isGroupSeparator) {
-                label.classList.add('custom-titlebar-group-label');
+                label.classList.add(cssStyle.locals.groupLabel);
             }
         }
 
@@ -78,13 +79,12 @@ export default class MenuItem {
 
         function setLine(line: HTMLDivElement): void {
             const hr = document.createElement('div');
-            hr.classList.add(style.locals.hr);
-            hr.classList.add('custom-titlebar-separator-line');
+            hr.classList.add(cssStyle.locals.hr);
             line.append(hr);
 
             if (isGroupSeparator) {
-                line.classList.add(style.locals.button);
-                line.classList.add(style.locals.separator);
+                line.classList.add(cssStyle.locals.button);
+                line.classList.add(cssStyle.locals.separator);
                 // this.element.insertBefore(line, label);
             }
         }
@@ -100,7 +100,7 @@ export default class MenuItem {
         if (menuItem.accelerator || defaultAccelerator || (menuItem.key && menuItem.modifiers)) {
             // Add accelerator
             const accelerator = document.createElement('div');
-            accelerator.classList.add(style.locals.accelerator);
+            accelerator.classList.add(cssStyle.locals.accelerator);
             accelerator.innerText = menuItem.accelerator || defaultAccelerator ? Accelerator.formatElectronAccelerator(menuItem.accelerator || defaultAccelerator) : Accelerator.formatNWAccelerator(menuItem.modifiers, menuItem.key);
             this.element.append(accelerator);
         }
@@ -113,8 +113,7 @@ export default class MenuItem {
         const isDisable = (menuItem.enabled === false);
         if (isDisable) {
             // Disable item
-            this.element.classList.add(style.locals.disabled);
-            this.element.classList.add('custom-titlebar-disabled-item');
+            this.element.classList.add(cssStyle.locals.disabled);
         }
         if (menuItem.visible === false) {
             // Hide item
@@ -122,7 +121,7 @@ export default class MenuItem {
         }
         if (menuItem.checked) {
             // Add check mark
-            this.element.innerHTML += svg.check.replace('{class}', style.locals.check);
+            this.element.innerHTML += svg.check.replace('{class}', cssStyle.locals.check);
         } else if (menuItem.icon || menuItem.iconSelector) {
             // Add icon
             let icon;
@@ -149,7 +148,7 @@ export default class MenuItem {
                 }
             }
             icon.setAttribute('draggable', 'false');
-            icon.classList.add(style.locals.icon);
+            icon.classList.add(cssStyle.locals.icon);
             this.element.append(icon);
         }
         if (menuItem.className) {
@@ -179,7 +178,7 @@ export default class MenuItem {
                 break;
             case 'submenu':
                 // Add right arrow
-                this.element.innerHTML += svg.arrow.replace('{class}', style.locals.arrow);
+                this.element.innerHTML += svg.arrow.replace('{class}', cssStyle.locals.arrow);
 
                 this.element.onclick = (e) => {
                     e.stopPropagation();
@@ -217,9 +216,9 @@ export default class MenuItem {
                 break;
             case 'separator':
                 if (isGroupSeparator) {
-                    this.element.classList.add(style.locals['group']);
+                    this.element.classList.add(cssStyle.locals.group);
                 } else {
-                    this.element.classList.add(style.locals.separator);
+                    this.element.classList.add(cssStyle.locals.separator);
                 }
                 break;
         }

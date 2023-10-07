@@ -1,4 +1,5 @@
-import style from '../style/style.scss';
+// import style from '../style/style.scss';
+import { cssStyle } from '../cssStyle';
 import MenuItem from './MenuItem';
 import Titlebar from "../index";
 
@@ -21,8 +22,7 @@ export default class Menu {
         this.instanceID = instanceID;
 
         this.element = document.createElement('div');
-        this.element.classList.toggle(style.locals.submenu, submenu);
-        this.element.classList.toggle('custom-titlebar-submenu', submenu);
+        this.element.classList.toggle(cssStyle.locals.submenu, submenu);
         this.element.title = ''; // Hide tooltip from parent item
 
         for (let i = 0; i < items.length; i++) {
@@ -52,8 +52,7 @@ export default class Menu {
 
         const menuItem = this.menuItems[index];
         this.subMenu = new Menu(submenu.items, true, this.instanceID);
-        menuItem.element.classList.add(style.locals.active);
-        menuItem.element.classList.add('custom-titlebar-menu-active');
+        menuItem.element.classList.add(cssStyle.locals.active);
         menuItem.element.appendChild(this.subMenu.element);
 
         // Prevent submenu to get out of window
@@ -79,9 +78,8 @@ export default class Menu {
         } else if (this.activeMenu >= 0) {
             const menuItem = this.menuItems[this.activeMenu];
             if (menuItem) {
-                menuItem.element.classList.remove(style.locals.active);
-                menuItem.element.classList.remove('custom-titlebar-menu-active');
-                menuItem.element.querySelector(`.${style.locals.submenu}`)?.remove();
+                menuItem.element.classList.remove(cssStyle.locals.active);
+                menuItem.element.querySelector(`.${cssStyle.locals.submenu}`)?.remove();
                 this.subMenu = null;
                 this.activeMenu = -1;
 

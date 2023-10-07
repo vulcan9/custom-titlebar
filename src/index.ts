@@ -1,4 +1,6 @@
-import style from './style/style.scss';
+// import style from './style/style.scss';
+import './style/style.scss';
+import { cssStyle } from './cssStyle';
 import svg from './style/svg.json';
 import Menu from './classes/Menu';
 import {Options, TitleBarOptions} from './classes/Options';
@@ -47,42 +49,47 @@ export default class Titlebar {
         return instance.options as TitleBarOptions;
     }
 
+    static closeAll() {
+        Titlebar.instance.forEach((val, key)=>{
+            const instance = Titlebar.getInstance(key);
+            instance.close();
+        })
+    }
+
     constructor(titleBarOptions?: TitleBarOptions, dom?: HTMLDivElement) {
         // Inject style
-        (style as any).use();
+        // (cssStyle as any).use();
+
         if (titleBarOptions?._dev){
-            window.console.log("[Custom-titlebar] style : ", style.locals);
+            window.console.log("[Custom-titlebar] style : ", cssStyle.locals);
         }
 
         // Create titlebar
         const titlebar = dom ? dom : document.createElement('div');
-        titlebar.id = style.locals.titlebar;
-        titlebar.classList.add('custom-titlebar');
+        // titlebar.id = style.locals.titlebar;
+        titlebar.classList.add(cssStyle.locals.titlebar);
         titlebar.oncontextmenu = () => false;
-        titlebar.classList.add(style.locals['hide-menu']);
+        titlebar.classList.add(cssStyle.locals.hideMenu);
 
         // Create drag region
         const dragregion = document.createElement('div');
-        dragregion.id = style.locals.dragregion;
-        dragregion.classList.add('custom-titlebar-dragregion');
+        dragregion.classList.add(cssStyle.locals.dragregion);
         titlebar.append(dragregion);
 
         // App icon
         const appicon = document.createElement('div');
-        appicon.id = style.locals.appicon;
-        appicon.classList.add('custom-titlebar-appicon');
+        appicon.classList.add(cssStyle.locals.appicon);
         titlebar.append(appicon);
 
         // Create menubar
         const menubar = document.createElement('div');
-        menubar.id = style.locals.menubar;
-        menubar.classList.add('custom-titlebar-menubar');
+        menubar.id = cssStyle.locals.menubar;
+        menubar.classList.add(cssStyle.locals.menubar);
         titlebar.append(menubar);
 
         // Create title
         const title = document.createElement('div');
-        title.id = style.locals.title;
-        title.classList.add('custom-titlebar-title');
+        title.classList.add(cssStyle.locals.title);
 
         const titlecontainer = document.createElement('span');
         title.append(titlecontainer);
@@ -90,31 +97,26 @@ export default class Titlebar {
 
         // Create controls
         const controls = document.createElement('div');
-        controls.id = style.locals.controls;
-        controls.classList.add('custom-titlebar-controls');
+        controls.classList.add(cssStyle.locals.controls);
 
         const minimizeWindow = document.createElement('div');
-        minimizeWindow.id = style.locals.minimize;
-        minimizeWindow.classList.add('custom-titlebar-minimize');
-        minimizeWindow.classList.add(style.locals.button);
+        minimizeWindow.classList.add(cssStyle.locals.minimize);
+        minimizeWindow.classList.add(cssStyle.locals.button);
         minimizeWindow.title = 'Minimize';
         controls.append(minimizeWindow);
         const maximizeWindow = document.createElement('div');
-        maximizeWindow.id = style.locals.maximize;
-        maximizeWindow.classList.add('custom-titlebar-maximize');
-        maximizeWindow.classList.add(style.locals.button);
+        maximizeWindow.classList.add(cssStyle.locals.maximize);
+        maximizeWindow.classList.add(cssStyle.locals.button);
         maximizeWindow.title = 'Maximize';
         controls.append(maximizeWindow);
         const restoreWindow = document.createElement('div');
-        restoreWindow.id = style.locals.restore;
-        restoreWindow.classList.add('custom-titlebar-restore');
-        restoreWindow.classList.add(style.locals.button);
+        restoreWindow.classList.add(cssStyle.locals.restore);
+        restoreWindow.classList.add(cssStyle.locals.button);
         restoreWindow.title = 'Restore';
         controls.append(restoreWindow);
         const closeWindow = document.createElement('div');
-        closeWindow.id = style.locals.close;
-        closeWindow.classList.add('custom-titlebar-close');
-        closeWindow.classList.add(style.locals.button);
+        closeWindow.classList.add(cssStyle.locals.close);
+        closeWindow.classList.add(cssStyle.locals.button);
         closeWindow.title = 'Close';
         controls.append(closeWindow);
         titlebar.append(controls);
@@ -125,8 +127,7 @@ export default class Titlebar {
         const container = ((): HTMLDivElement | null => {
             if (dom) return null;
             const container = document.createElement('div');
-            container.id = style.locals.container;
-            container.classList.add('custom-titlebar-container');
+            container.classList.add(cssStyle.locals.container);
 
             // Move body inside a container
             while (document.body.firstChild) {
@@ -284,7 +285,7 @@ export default class Titlebar {
 
     onBlur(): void {
         if (this.options.unfocusEffect) {
-            this.titlebar.classList.add(style.locals.inactive);
+            this.titlebar.classList.add(cssStyle.locals.inactive);
         }
 
         // 개발용으로 닫지 않음
@@ -295,7 +296,7 @@ export default class Titlebar {
     }
 
     onFocus(): void {
-        this.titlebar.classList.remove(style.locals.inactive);
+        this.titlebar.classList.remove(cssStyle.locals.inactive);
     }
 
     onResize(): void {
@@ -303,7 +304,7 @@ export default class Titlebar {
     }
 
     resized(): void {
-        this.titlebar.classList.toggle(style.locals.maximized, (this.options.isMaximized && this.options.isMaximized()) || false,);
+        this.titlebar.classList.toggle(cssStyle.locals.maximized, (this.options.isMaximized && this.options.isMaximized()) || false,);
         this.updateMenuSize();
     }
 
@@ -366,7 +367,7 @@ export default class Titlebar {
 
         // 개발용 경고
         if (o._dev) {
-            Object(window)._style = style;
+            Object(window)._style = cssStyle;
             window.console.warn("[Custom-titlebar] 임시 개발용 (submenu, blur 안닫음) 삭제할것");
         }
 
@@ -380,12 +381,12 @@ export default class Titlebar {
             if (this.container) this.container.style.overflow = o.overflow;
         }
         if (typeof o.drag != 'undefined') {
-            this.titlebar.classList.toggle(style.locals.nodrag, !o.drag);
+            this.titlebar.classList.toggle(cssStyle.locals.nodrag, !o.drag);
         }
         if (o.platform) this.applyTheme();
 
         if (typeof o.hideMenuOnDarwin != 'undefined') {
-            this.titlebar.classList.toggle(style.locals['hide-menu'], o.hideMenuOnDarwin);
+            this.titlebar.classList.toggle(cssStyle.locals.hideMenu, o.hideMenuOnDarwin);
         }
         if (o.height) {
             this.titlebarHeight = o.height;
@@ -406,8 +407,8 @@ export default class Titlebar {
         const position = this.options.titleHorizontalAlignment;
         if (typeof position === 'undefined') return;
 
-        this.title.classList.toggle(style.locals.left, position == 'left');
-        this.title.classList.toggle(style.locals.right, position == 'right');
+        this.title.classList.toggle(cssStyle.locals.left, position == 'left');
+        this.title.classList.toggle(cssStyle.locals.right, position == 'right');
     }
 
     updateIcon(): void {
@@ -422,16 +423,16 @@ export default class Titlebar {
         const o = this.options;
 
         if (typeof o.minimizable != 'undefined') {
-            this.minimizeWindow.classList.toggle(style.locals.disabled, !o.minimizable);
+            this.minimizeWindow.classList.toggle(cssStyle.locals.disabled, !o.minimizable);
         }
         if (typeof o.maximizable != 'undefined') {
-            this.maximizeWindow.classList.toggle(style.locals.disabled, !o.maximizable);
+            this.maximizeWindow.classList.toggle(cssStyle.locals.disabled, !o.maximizable);
         }
         if (typeof o.closeable != 'undefined') {
-            this.closeWindow.classList.toggle(style.locals.disabled, !o.closeable);
+            this.closeWindow.classList.toggle(cssStyle.locals.disabled, !o.closeable);
         }
         if (typeof o.minimizable != 'undefined' || typeof o.maximizable != 'undefined') {
-            this.controls.classList.toggle(style.locals['close-only'], !o.minimizable && !o.maximizable);
+            this.controls.classList.toggle(cssStyle.locals.closeOnly, !o.minimizable && !o.maximizable);
         }
         if (o.onMinimize) {
             this.minimizeWindow.onclick = o.onMinimize;
@@ -444,7 +445,7 @@ export default class Titlebar {
             this.closeWindow.onclick = o.onClose;
         }
         if (o.isMaximized) {
-            this.titlebar.classList.toggle(style.locals.maximized, o.isMaximized());
+            this.titlebar.classList.toggle(cssStyle.locals.maximized, o.isMaximized());
         }
 
         if (typeof o.windowControlsOverlay != 'undefined') {
@@ -459,14 +460,14 @@ export default class Titlebar {
         const color = this.options.backgroundColor;
         if (typeof color === 'undefined') return;
         if (color === 'transparent'){
-            this.titlebar.classList.toggle(style.locals.dark, false);
+            this.titlebar.classList.toggle(cssStyle.locals.dark, false);
             this.titlebar.style.backgroundColor = 'transparent';
             return;
         }
 
         const rgb = parseColor(color);
         const brightness = getBrightness(rgb);
-        this.titlebar.classList.toggle(style.locals.dark, brightness <= 125);
+        this.titlebar.classList.toggle(cssStyle.locals.dark, brightness <= 125);
         this.titlebar.style.backgroundColor = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
     }
 
@@ -487,15 +488,29 @@ export default class Titlebar {
 
     // Check if the menu need to be condensed
     updateMenuSize(): void {
-        const condensed = this.options.condensed;
+        const o = this.options;
+        const condensed = o.condensed;
         if (typeof condensed === 'undefined') return;
 
-
-
         if (this.titlebar.clientWidth > 0) {
+
+            const sizeSet = (value='') =>{
+                this.appicon.style.width = value;
+                this.menubar.style.width = value;
+                this.title.style.width = value;
+                this.controls.style.width = value;
+            }
+            sizeSet('fit-content');
+
             this.menuSize = this.menubar.clientWidth;
 
-            const w = this.menuSize + this.appicon.clientWidth + this.title.clientWidth + this.controls.clientWidth + 1;
+            // 메뉴 크기가 넘치면 자동으로 condensed 메뉴로 전환
+            // let w = this.menuSize + this.appicon.clientWidth + this.title.clientWidth + this.controls.clientWidth + 1;
+            let w = this.menuSize + 1;
+            if (o.icon) w += this.appicon.clientWidth;
+            if(!o.hideTitle) w += this.title.clientWidth;
+            if(o.windowControlsOverlay) w += this.controls.clientWidth;
+
             if (w > this.titlebarWidth() || this.options.condensed) {
                 if (!this.menuCondensed) {
                     this.buildMenu(true);
@@ -517,9 +532,11 @@ export default class Titlebar {
             }
             // */
 
+            sizeSet();
         } else {
             setTimeout(() => this.updateMenuSize(), 10);
         }
+
     }
 
     updateHeight(height: number): void {
@@ -533,8 +550,8 @@ export default class Titlebar {
     applyTheme(): void {
         const platform = Options.getPlatform();
         const svgs = svg[platform];
-        this.titlebar.classList.toggle(style.locals.win, platform == 'win');
-        this.titlebar.classList.toggle(style.locals.darwin, platform == 'darwin');
+        this.titlebar.classList.toggle(cssStyle.locals.win, platform == 'win');
+        this.titlebar.classList.toggle(cssStyle.locals.darwin, platform == 'darwin');
         this.minimizeWindow.innerHTML = svgs.minimize;
         this.maximizeWindow.innerHTML = svgs.maximize;
         this.restoreWindow.innerHTML = svgs.restore;
